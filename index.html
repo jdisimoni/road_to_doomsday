@@ -413,11 +413,23 @@ async function toggleWatched(idx){
   USER_DATA.watched = newWatched; // optimistic local update
   syncCheckboxDom(idx, set.has(idx));
   updateProgressStats();
+  refreshDisplayWeekIfNeeded(); // advance/retreat the "This Week" card if a week just got completed/uncompleted
   try{
     await updateDoc(userDocRef(CURRENT_USER.uid), { watched: newWatched });
   }catch(e){
     console.error("Failed to save:", e);
   }
+}
+// Re-renders just the "This Week" card + schedule highlight when the checked item
+// changes what the "furthest complete week" is — without rebuilding the whole checklist
+// (which would blow away the checkbox the person just clicked).
+function refreshDisplayWeekIfNeeded(){
+  const startDate = new Date(USER_DATA.startDate + "T00:00:00");
+  const weeks = chunkForStart(startDate);
+  const calIdx = findCurrentWeekIndex(weeks);
+  const dispIdx = findDisplayWeekIndex(weeks, calIdx);
+  renderThisWeek(weeks, dispIdx, calIdx);
+  renderSchedule(weeks, dispIdx);
 }
 function syncCheckboxDom(idx, isWatched){
   document.querySelectorAll('[data-idx="'+idx+'"]').forEach(cb=>{
@@ -457,6 +469,17 @@ function findCurrentWeekIndex(weeks){
   if(now < weeks[0].start) return -1;
   return weeks.length;
 }
+function isWeekComplete(wk){
+  return wk.indices.length > 0 && wk.indices.every(i => USER_DATA.watched.includes(i));
+}
+// Starts from the calendar-current week, then keeps advancing past any week
+// that's fully checked off — so finishing early unlocks next week right away.
+function findDisplayWeekIndex(weeks, calIdx){
+  if(calIdx === -1 || calIdx >= weeks.length) return calIdx;
+  let idx = calIdx;
+  while(idx < weeks.length && isWeekComplete(weeks[idx])) idx++;
+  return idx; // may equal weeks.length if everything from here on is done
+}
 
 /* ================= HELPERS ================= */
 function fmtRange(s,e){
@@ -488,38 +511,41 @@ function renderClock(){
 renderClock(); setInterval(renderClock,1000);
 
 /* ================= RENDER: THIS WEEK / SCHEDULE / CHECKLIST ================= */
-function renderThisWeek(weeks, curIdx){
+function renderThisWeek(weeks, dispIdx, calIdx){
   const tag = document.getElementById("twTag");
   const title = document.getElementById("twTitle");
   const dates = document.getElementById("twDates");
   const list = document.getElementById("twList");
   list.innerHTML = "";
 
-  if(curIdx === -1){
+  if(dispIdx === -1){
     tag.textContent = "Starts Soon";
     title.textContent = "Week 1";
     dates.textContent = fmtRange(weeks[0].start, weeks[0].end);
     weeks[0].indices.forEach(i=>list.appendChild(itemLi(i)));
     return;
   }
-  if(curIdx >= weeks.length){
-    tag.textContent = "Status";
+  if(dispIdx >= weeks.length){
+    tag.textContent = "🏆 All Caught Up";
     title.textContent = "You're through your whole schedule";
     dates.textContent = "Catch any stragglers before Dec 18!";
     return;
   }
-  tag.textContent = "This Week";
-  title.textContent = "Week " + (curIdx+1) + " of " + weeks.length;
-  dates.textContent = fmtRange(weeks[curIdx].start, weeks[curIdx].end);
-  weeks[curIdx].indices.forEach(i=>list.appendChild(itemLi(i)));
+  const isAhead = dispIdx > calIdx;
+  tag.textContent = isAhead ? "🚀 Ahead of Schedule" : "This Week";
+  title.textContent = "Week " + (dispIdx+1) + " of " + weeks.length;
+  dates.textContent = isAhead
+    ? fmtRange(weeks[dispIdx].start, weeks[dispIdx].end) + " — you finished early, here's what's next"
+    : fmtRange(weeks[dispIdx].start, weeks[dispIdx].end);
+  weeks[dispIdx].indices.forEach(i=>list.appendChild(itemLi(i)));
 }
 
-function renderSchedule(weeks, curIdx){
+function renderSchedule(weeks, dispIdx){
   const container = document.getElementById("scheduleTable");
   container.innerHTML = "";
   weeks.forEach((wk,i)=>{
     const row = document.createElement("div");
-    row.className = "week-row" + (i===curIdx ? " is-current" : "");
+    row.className = "week-row" + (i===dispIdx ? " is-current" : "");
     const titles = wk.indices.map(idx=>{
       const item = ITEMS[idx];
       return item.o ? '<span class="opt">'+item.t+' (opt)</span>' : item.t;
@@ -598,10 +624,11 @@ function renderAll(){
   if(!CURRENT_USER || !USER_DATA) return;
   const startDate = new Date(USER_DATA.startDate + "T00:00:00");
   const weeks = chunkForStart(startDate);
-  const curIdx = findCurrentWeekIndex(weeks);
+  const calIdx = findCurrentWeekIndex(weeks);
+  const dispIdx = findDisplayWeekIndex(weeks, calIdx);
 
-  renderThisWeek(weeks, curIdx);
-  renderSchedule(weeks, curIdx);
+  renderThisWeek(weeks, dispIdx, calIdx);
+  renderSchedule(weeks, dispIdx);
   renderChecklist();
   updateProgressStats();
   renderPaceNote(weeks, startDate);
@@ -611,8 +638,7 @@ document.getElementById("resetBtn").addEventListener("click", async ()=>{
   if(!CURRENT_USER) return;
   if(confirm("Reset your watched progress? This can't be undone.")){
     USER_DATA.watched = [];
-    updateProgressStats();
-    document.querySelectorAll("input.trk").forEach(cb=>{ cb.checked=false; cb.closest("li").classList.remove("watched"); });
+    renderAll();
     try{ await updateDoc(userDocRef(CURRENT_USER.uid), { watched: [] }); }catch(e){ console.error(e); }
   }
 });
