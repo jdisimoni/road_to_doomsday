@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Road to Doomsday — MCU Watch Order</title>
+
+<!-- PWA: installable app metadata -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ED1D24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Doomsday Watch">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0B0B0C; --panel:#151517; --panel-raised:#1D1D20; --hairline:#2E2E32;
+    --paper:#F2EFE6; --muted:#9A9A9E; --red:#ED1D24; --red-deep:#8F0F13; --gold:#FFC72C;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black); color:var(--paper); font-family:'Public Sans', sans-serif; line-height:1.5;}
+  .wrap{max-width:940px; margin:0 auto; padding:0 24px;}
+  .display{font-family:'Anton', sans-serif; text-transform:uppercase; letter-spacing:0.01em;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  header.hero{
+    position:relative; padding:56px 0 30px; text-align:center;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 40%, var(--black) 100%),
+      radial-gradient(ellipse 70% 60% at 50% 0%, rgba(237,29,36,0.28), transparent 70%), var(--black);
+    border-bottom:4px solid var(--red); overflow:hidden;
+  }
+  header.hero::before{
+    content:""; position:absolute; inset:0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1.4px);
+    background-size: 11px 11px; pointer-events:none;
+  }
+  .hero-inner{position:relative; z-index:1;}
+  .eyebrow{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:11px;
+    letter-spacing:0.3em; text-transform:uppercase; color:var(--black); background:var(--gold);
+    padding:4px 12px; margin-bottom:20px; transform:skewX(-8deg);
+  }
+  h1.title{ font-size:clamp(36px, 7.5vw, 68px); line-height:0.95; color:var(--paper); text-shadow:3px 3px 0 var(--red-deep); }
+  h1.title .red{color:var(--red); text-shadow:3px 3px 0 #000;}
+  .subtitle{color:var(--muted); font-size:15px; margin-top:14px; max-width:520px; margin-left:auto; margin-right:auto;}
+
+  /* profile bar */
+  .profile-bar{ margin-top:28px; display:flex; justify-content:center; }
+  .profile-pill{
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+    background:var(--panel); border:2px solid var(--gold); color:var(--paper);
+    padding:8px 16px; cursor:pointer; display:flex; align-items:center; gap:8px;
+  }
+  .profile-pill strong{color:var(--gold);}
+  .profile-pill:hover{border-color:var(--red);}
+
+  .profile-panel{
+    display:none; margin:14px auto 0; max-width:420px; background:var(--panel);
+    border:2px solid var(--paper); padding:20px; text-align:left;
+  }
+  .profile-panel.open{display:block;}
+  .profile-panel h4{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:12px;}
+  .profile-item{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 10px; border:1px solid var(--hairline); margin-bottom:8px; cursor:pointer;
+  }
+  .profile-item:hover{border-color:var(--red);}
+  .profile-item.active{border-color:var(--gold); background:rgba(255,199,44,0.08);}
+  .profile-item .pname{font-weight:600; font-size:14px;}
+  .profile-item .pmeta{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted);}
+  .profile-item .pdel{color:var(--muted); font-size:16px; padding:0 6px;}
+  .profile-item .pdel:hover{color:var(--red);}
+  .add-person{margin-top:14px; border-top:1px solid var(--hairline); padding-top:14px;}
+  .add-person label{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); display:block; margin-bottom:4px; margin-top:10px;}
+  .add-person input{
+    width:100%; background:var(--black); border:1px solid var(--hairline); color:var(--paper);
+    padding:8px 10px; font-family:'Public Sans', sans-serif; font-size:14px;
+  }
+  .add-person button{
+    margin-top:14px; width:100%; background:var(--red); color:var(--paper); border:none;
+    padding:10px; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.05em; cursor:pointer;
+  }
+  .add-person button:hover{background:var(--red-deep);}
+  .startdate-row{
+    display:flex; align-items:center; gap:8px; margin-top:14px; border-top:1px solid var(--hairline); padding-top:14px;
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);
+  }
+  .startdate-row input{
+    background:var(--black); border:1px solid var(--hairline); color:var(--paper); padding:5px 8px; font-family:'IBM Plex Mono', monospace; font-size:12px;
+  }
+
+  .clock{display:flex; justify-content:center; gap:12px; margin:32px 0 18px; flex-wrap:wrap;}
+  .clock .segment{background:var(--panel); border:2px solid var(--red); padding:12px 16px; min-width:80px; box-shadow:4px 4px 0 var(--red-deep);}
+  .clock .num{font-family:'IBM Plex Mono', monospace; font-size:clamp(26px, 5vw, 36px); font-weight:600; color:var(--gold); font-variant-numeric:tabular-nums;}
+  .clock .unit{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-top:4px;}
+  .clock-caption{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted);}
+  .clock-caption strong{color:var(--red);}
+
+  .progress-wrap{max-width:640px; margin:28px auto 0; display:flex; align-items:center; gap:16px;}
+  .burst{
+    flex-shrink:0; width:74px; height:74px; background:var(--gold);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+  }
+  .burst .pct{font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:16px; color:var(--black);}
+  .burst .pct-label{font-family:'IBM Plex Mono', monospace; font-size:7px; color:var(--black); letter-spacing:0.05em;}
+  .progress-rail{flex:1; height:14px; background:var(--panel-raised); border:2px solid var(--hairline); position:relative; overflow:hidden;}
+  .progress-fill{height:100%; background: repeating-linear-gradient(135deg, var(--red), var(--red) 8px, var(--red-deep) 8px, var(--red-deep) 16px); width:0%; transition:width 0.4s ease;}
+  .progress-text{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted); text-align:center; margin-top:10px;}
+  .progress-text strong{color:var(--paper);}
+  .pace-note{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--gold); text-align:center; margin-top:6px; max-width:480px; margin-left:auto; margin-right:auto;}
+  .install-row{display:flex; justify-content:center; margin-top:18px;}
+  .install-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.04em;
+    background:var(--gold); color:var(--black); border:none; padding:10px 18px; cursor:pointer; font-weight:600;
+  }
+  .install-btn:hover{background:#e0ac1c;}
+  .ios-hint{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);}
+  .ios-hint strong{color:var(--gold);}
+
+  section.this-week{padding:44px 0 8px;}
+  .card-thisweek{background:var(--panel); border:3px solid var(--paper); box-shadow:6px 6px 0 var(--red); padding:26px 28px;}
+  .card-thisweek .tag{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--black); background:var(--gold); display:inline-block; padding:2px 10px; margin-bottom:12px;}
+  .card-thisweek h2{font-size:26px; margin-bottom:4px;}
+  .card-thisweek .dates{color:var(--muted); font-family:'IBM Plex Mono', monospace; font-size:12px; margin-bottom:18px;}
+  .watch-list{list-style:none;}
+  .watch-list li{padding:10px 0; border-top:1px solid var(--hairline); display:flex; align-items:center; gap:12px;}
+  .watch-list li:first-child{border-top:none;}
+
+  input.trk{ appearance:none; width:20px; height:20px; border:2px solid var(--muted); background:var(--black); flex-shrink:0; cursor:pointer; position:relative;}
+  input.trk:checked{background:var(--red); border-color:var(--red);}
+  input.trk:checked::after{content:""; position:absolute; left:6px; top:2px; width:5px; height:11px; border:solid var(--paper); border-width:0 3px 3px 0; transform:rotate(45deg);}
+  label.trk-label{cursor:pointer; font-size:14px;}
+  li.watched label.trk-label{color:var(--muted); text-decoration:line-through;}
+  .opt-tag{font-family:'IBM Plex Mono', monospace; font-size:9px; color:var(--gold); border:1px solid var(--gold); padding:1px 5px; margin-left:6px; letter-spacing:0.04em;}
+
+  section{padding:52px 0;}
+  section.divider-top{border-top:3px solid var(--hairline);}
+  h2.section-title{font-size:30px; margin-bottom:6px;}
+  .section-sub{color:var(--muted); font-size:14px; margin-bottom:28px; max-width:620px;}
+  .stripe{height:10px; background: repeating-linear-gradient(-45deg, var(--red), var(--red) 10px, var(--black) 10px, var(--black) 20px);}
+
+  .schedule{border-top:1px solid var(--hairline);}
+  .week-row{border-bottom:1px solid var(--hairline); padding:16px 0; display:grid; grid-template-columns:60px 130px 1fr; gap:14px; align-items:start;}
+  .week-row.is-current{background:rgba(237,29,36,0.10); border-left:4px solid var(--red); padding-left:14px; margin-left:-18px;}
+  .week-num{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--gold); padding-top:2px;}
+  .week-dates{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted); padding-top:2px;}
+  .week-titles{font-size:14px;}
+  .week-titles .opt{color:var(--muted);}
+  .week-prog{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--red); margin-top:4px;}
+  @media (max-width:600px){ .week-row{grid-template-columns:1fr;} .week-row.is-current{margin-left:0; padding-left:14px;} }
+
+  .phase-block{margin-bottom:36px;}
+  .phase-head{display:flex; align-items:center; gap:12px; margin-bottom:6px;}
+  .phase-num{font-family:'Anton', sans-serif; font-size:16px; color:var(--black); background:var(--red); width:30px; height:30px; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .phase-head h3{font-size:19px;}
+  .phase-progress{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted); margin-bottom:12px; margin-left:42px;}
+  .checklist{list-style:none; border-top:1px solid var(--hairline);}
+  .checklist li{padding:10px 0; border-bottom:1px solid var(--hairline); display:flex; align-items:center; gap:12px; font-size:14px;}
+
+  .finale-block{margin-top:24px; border:3px solid var(--red); padding:28px; background:linear-gradient(180deg, var(--red-deep), var(--panel)); box-shadow:6px 6px 0 var(--gold);}
+  .finale-block .tag{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:8px;}
+  .finale-block h3{font-size:30px;}
+  .finale-block p{color:#e8dede; font-size:13px; margin-top:6px;}
+
+  .reset-row{display:flex; justify-content:center; margin-top:36px;}
+  button#resetBtn{font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.05em; background:transparent; color:var(--muted); border:1px solid var(--hairline); padding:10px 18px; cursor:pointer;}
+  button#resetBtn:hover{border-color:var(--red); color:var(--red);}
+
+  footer{border-top:3px solid var(--red); padding:28px 0 60px; text-align:center; color:var(--muted); font-family:'IBM Plex Mono', monospace; font-size:11px;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <span class="eyebrow">Mission Briefing</span>
+    <h1 class="title display">The Road to <span class="red">Doomsday</span></h1>
+    <p class="subtitle">Full MCU chronological watch order — every movie, One-Shot, and Disney+ series — with a personal pace and progress tracker for everyone watching.</p>
+
+    <div class="profile-bar">
+      <div class="profile-pill" id="profilePill" onclick="togglePanel()">🎭 Watching as: <strong id="activeName">—</strong> ▾</div>
+    </div>
+    <div class="profile-panel" id="profilePanel">
+      <h4>Switch Person</h4>
+      <div id="profileListEl"></div>
+      <div class="add-person">
+        <h4 style="margin-bottom:0;">Add Another Person</h4>
+        <label>Name</label>
+        <input type="text" id="newName" placeholder="e.g. Sarah">
+        <label>Start date</label>
+        <input type="date" id="newStart">
+        <button onclick="handleCreateProfile()">Start Watching</button>
+      </div>
+      <div class="startdate-row" id="startDateRow" style="display:none;">
+        Adjust <span id="startDateActiveName" style="color:var(--paper);">&nbsp;</span>'s start date:
+        <input type="date" id="editStart">
+        <button onclick="handleUpdateStart()" style="background:none; border:1px solid var(--hairline); color:var(--paper); padding:5px 10px; cursor:pointer; font-family:'IBM Plex Mono', monospace; font-size:11px;">Save</button>
+      </div>
+    </div>
+
+    <div class="clock">
+      <div class="segment"><div class="num mono" id="d">--</div><div class="unit">Days</div></div>
+      <div class="segment"><div class="num mono" id="h">--</div><div class="unit">Hours</div></div>
+      <div class="segment"><div class="num mono" id="m">--</div><div class="unit">Mins</div></div>
+      <div class="segment"><div class="num mono" id="s">--</div><div class="unit">Secs</div></div>
+    </div>
+    <div class="clock-caption">until <strong>Avengers: Doomsday</strong> — theaters, Dec 18, 2026</div>
+
+    <div class="progress-wrap">
+      <div class="burst"><div class="pct mono" id="pctNum">0%</div><div class="pct-label">Watched</div></div>
+      <div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="progress-text" id="progressText">0 of 82 watched</div>
+    <div class="pace-note" id="paceNote"></div>
+
+    <div class="install-row" id="installRow" style="display:none;">
+      <button id="installBtn" class="install-btn">📲 Add to Home Screen</button>
+    </div>
+    <div class="install-row" id="iosInstallNote" style="display:none;">
+      <span class="ios-hint">📲 On iPhone: tap <strong>Share</strong> → <strong>Add to Home Screen</strong> to install</span>
+    </div>
+  </div>
+</header>
+
+<div class="stripe"></div>
+
+<section class="this-week">
+  <div class="wrap">
+    <div class="card-thisweek" id="thisWeekCard">
+      <span class="tag" id="twTag">This Week</span>
+      <h2 class="display" id="twTitle">Loading orders…</h2>
+      <div class="dates" id="twDates"></div>
+      <ul class="watch-list" id="twList"></ul>
+    </div>
+  </div>
+</section>
+
+<section class="divider-top">
+  <div class="wrap">
+    <h2 class="section-title display">Your Weekly Schedule</h2>
+    <p class="section-sub">Paced from your own start date to Dec 18 — check things off up here or down in the full list, they stay in sync.</p>
+    <div class="schedule" id="scheduleTable"></div>
+  </div>
+</section>
+
+<section class="divider-top">
+  <div class="wrap">
+    <h2 class="section-title display">Full Checklist</h2>
+    <p class="section-sub">Every title, in-universe order, grouped by Phase. <span class="opt-tag">OPT</span> marks the Netflix-era shows — connected to the MCU but not essential for Doomsday. Progress saves automatically for whoever's selected above.</p>
+    <div id="phaseList"></div>
+
+    <div class="finale-block">
+      <span class="tag">Dec 18, 2026 — Theaters</span>
+      <h3 class="display">Avengers: Doomsday</h3>
+      <p>The finish line. Everything above leads here.</p>
+      <ul class="watch-list" id="finaleList" style="margin-top:14px;"></ul>
+    </div>
+
+    <div class="reset-row"><button id="resetBtn">Reset this person's progress</button></div>
+  </div>
+</section>
+
+<footer>
+  Built for the Doomsday marathon · Chronological order per Marvel's official MCU timeline · Each person's progress and pace saves separately in this browser
+</footer>
+
+<script>
+/* ================= STATIC DATA ================= */
+const DOOMSDAY = new Date("2026-12-18T00:00:00");
+const TODAY_DEFAULT = new Date(); TODAY_DEFAULT.setHours(0,0,0,0);
+
+const ITEMS = [
+  {t:"Eyes of Wakanda"}, {t:"Captain America: The First Avenger"}, {t:"One Shot: Agent Carter"}, {t:"Captain Marvel"},
+  {t:"Iron Man"}, {t:"Iron Man 2"}, {t:"The Incredible Hulk"}, {t:"One Shot: A Funny Thing Happened on the Way to Thor's Hammer"},
+  {t:"Thor"}, {t:"One Shot: The Consultant"}, {t:"The Avengers"}, {t:"One Shot: Item 47"}, {t:"Thor: The Dark World"},
+  {t:"Iron Man 3"}, {t:"One Shot: All Hail the King"}, {t:"Captain America: The Winter Soldier"}, {t:"Guardians of the Galaxy"},
+  {t:"Guardians of the Galaxy Vol. 2"}, {t:"I Am Groot — Season 1"}, {t:"I Am Groot — Season 2"},
+  {t:"Daredevil — Season 1", o:1}, {t:"Jessica Jones — Season 1", o:1}, {t:"Avengers: Age of Ultron"}, {t:"Ant-Man"},
+  {t:"Daredevil — Season 2", o:1}, {t:"Luke Cage — Season 1", o:1}, {t:"Iron Fist — Season 1", o:1}, {t:"The Defenders", o:1},
+  {t:"Captain America: Civil War"}, {t:"Black Widow"}, {t:"Black Panther"}, {t:"Spider-Man: Homecoming"},
+  {t:"The Punisher — Season 1", o:1}, {t:"Doctor Strange"}, {t:"Jessica Jones — Season 2", o:1}, {t:"Luke Cage — Season 2", o:1},
+  {t:"Iron Fist — Season 2", o:1}, {t:"Daredevil — Season 3", o:1}, {t:"Thor: Ragnarok"}, {t:"The Punisher — Season 2", o:1},
+  {t:"Jessica Jones — Season 3", o:1}, {t:"Ant-Man and the Wasp"}, {t:"Avengers: Infinity War"}, {t:"Avengers: Endgame"},
+  {t:"Loki — Season 1"}, {t:"What If…? — Season 1"}, {t:"Marvel Zombies"}, {t:"WandaVision"},
+  {t:"Shang-Chi and the Legend of the Ten Rings"}, {t:"The Falcon and the Winter Soldier"}, {t:"Spider-Man: Far From Home"},
+  {t:"Eternals"}, {t:"Spider-Man: No Way Home"}, {t:"Doctor Strange in the Multiverse of Madness"}, {t:"Hawkeye"}, {t:"Moon Knight"},
+  {t:"Black Panther: Wakanda Forever"}, {t:"Echo"}, {t:"She-Hulk: Attorney at Law"}, {t:"Ms. Marvel"}, {t:"Thor: Love and Thunder"},
+  {t:"Ironheart"}, {t:"Werewolf By Night"}, {t:"The Guardians of the Galaxy Holiday Special"}, {t:"Ant-Man and the Wasp: Quantumania"},
+  {t:"Guardians of the Galaxy Vol. 3"}, {t:"Secret Invasion"}, {t:"The Marvels"}, {t:"Loki — Season 2"}, {t:"What If…? — Season 2"},
+  {t:"Deadpool & Wolverine"}, {t:"Agatha All Along"}, {t:"What If…? — Season 3"}, {t:"Daredevil: Born Again — Season 1"},
+  {t:"Captain America: Brave New World"}, {t:"Thunderbolts*"}, {t:"The Fantastic Four: First Steps"}, {t:"Wonder Man"},
+  {t:"Daredevil: Born Again — Season 2"}, {t:"The Punisher: One Last Kill"}, {t:"Spider-Man: Brand New Day"},
+  {t:"Avengers: Doomsday", finale:1}
+];
+const FINALE_IDX = ITEMS.length - 1;
+const PHASES = [
+  {name:"Phase 1–3 · The Infinity Saga", start:0, end:43},
+  {name:"Phase 4 · Multiverse Saga Begins", start:44, end:60},
+  {name:"Phase 5", start:61, end:70},
+  {name:"Phase 6 · Countdown to Doomsday", start:71, end:80}
+];
+
+/* ================= PROFILE STORE ================= */
+const PROFILES_KEY = "mcu-profiles-v2";
+const ACTIVE_KEY = "mcu-active-profile-v2";
+let PROFILES = {};
+let ACTIVE = null;
+
+function loadProfiles(){
+  try{ PROFILES = JSON.parse(localStorage.getItem(PROFILES_KEY)) || {}; }catch(e){ PROFILES = {}; }
+  try{ ACTIVE = localStorage.getItem(ACTIVE_KEY); }catch(e){ ACTIVE = null; }
+  if(!ACTIVE || !PROFILES[ACTIVE]){
+    const names = Object.keys(PROFILES);
+    ACTIVE = names.length ? names[0] : null;
+  }
+}
+function saveProfiles(){ try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(PROFILES)); }catch(e){} }
+function saveActive(){ try{ localStorage.setItem(ACTIVE_KEY, ACTIVE); }catch(e){} }
+
+function ensureDefaultProfile(){
+  if(Object.keys(PROFILES).length === 0){
+    const iso = TODAY_DEFAULT.toISOString().slice(0,10);
+    PROFILES["Me"] = {startDate: iso, watched: []};
+    ACTIVE = "Me";
+    saveProfiles(); saveActive();
+  }
+}
+
+function currentProfile(){ return PROFILES[ACTIVE]; }
+
+/* ================= DYNAMIC SCHEDULE PER PROFILE ================= */
+function chunkForStart(startDate){
+  const total = ITEMS.length;
+  const msWeek = 7*86400000;
+  let availableWeeks = Math.ceil((DOOMSDAY - startDate)/msWeek);
+  if(availableWeeks < 1) availableWeeks = 1;
+  const base = Math.floor(total/availableWeeks);
+  const extra = total % availableWeeks;
+  const weeks = [];
+  let idx = 0;
+  for(let w=0; w<availableWeeks && idx<total; w++){
+    const count = base + (w < extra ? 1 : 0);
+    const indices = [];
+    for(let k=0;k<count && idx<total;k++){ indices.push(idx); idx++; }
+    const wkStart = new Date(startDate.getTime() + w*msWeek);
+    let wkEnd = new Date(wkStart.getTime() + 6*86400000);
+    if(idx >= total && wkEnd > DOOMSDAY) wkEnd = new Date(DOOMSDAY.getTime());
+    weeks.push({start:wkStart, end:wkEnd, indices});
+  }
+  return weeks;
+}
+
+function findCurrentWeekIndex(weeks){
+  const now = new Date(); now.setHours(12,0,0,0);
+  for(let i=0;i<weeks.length;i++){
+    const end = new Date(weeks[i].end); end.setHours(23,59,59,999);
+    if(now >= weeks[i].start && now <= end) return i;
+  }
+  if(now < weeks[0].start) return -1;
+  return weeks.length;
+}
+
+/* ================= HELPERS ================= */
+function fmtRange(s,e){
+  const o = {month:'short', day:'numeric'};
+  return s.toLocaleDateString('en-US',o) + " – " + e.toLocaleDateString('en-US',o) + ", 2026";
+}
+function itemLi(idx){
+  const item = ITEMS[idx];
+  const p = currentProfile();
+  const isW = p.watched.includes(idx);
+  const li = document.createElement("li");
+  if(isW) li.classList.add("watched");
+  const cbId = "cb-" + idx;
+  li.innerHTML =
+    '<input type="checkbox" class="trk" id="'+cbId+'" data-idx="'+idx+'" '+(isW?"checked":"")+'>' +
+    '<label class="trk-label" for="'+cbId+'">' + item.t + (item.o ? ' <span class="opt-tag">OPT</span>' : '') + '</label>';
+  li.querySelector("input").addEventListener("change", ()=>toggleWatched(idx));
+  return li;
+}
+function toggleWatched(idx){
+  const p = currentProfile();
+  const pos = p.watched.indexOf(idx);
+  if(pos === -1) p.watched.push(idx); else p.watched.splice(pos,1);
+  saveProfiles();
+  document.querySelectorAll('[data-idx="'+idx+'"]').forEach(cb=>{
+    const isW = p.watched.includes(idx);
+    cb.checked = isW;
+    const li = cb.closest("li");
+    if(li) li.classList.toggle("watched", isW);
+  });
+  updateProgressStats();
+}
+
+/* ================= CLOCK (universal) ================= */
+function renderClock(){
+  const now = new Date();
+  let diff = DOOMSDAY - now; if(diff<0) diff=0;
+  document.getElementById("d").textContent = Math.floor(diff/86400000);
+  document.getElementById("h").textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,"0");
+  document.getElementById("m").textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,"0");
+  document.getElementById("s").textContent = String(Math.floor((diff%60000)/1000)).padStart(2,"0");
+}
+renderClock(); setInterval(renderClock,1000);
+
+/* ================= RENDER: PROFILE UI ================= */
+function togglePanel(){
+  document.getElementById("profilePanel").classList.toggle("open");
+}
+function renderProfileUI(){
+  document.getElementById("activeName").textContent = ACTIVE;
+  const listEl = document.getElementById("profileListEl");
+  listEl.innerHTML = "";
+  Object.keys(PROFILES).forEach(name=>{
+    const p = PROFILES[name];
+    const div = document.createElement("div");
+    div.className = "profile-item" + (name===ACTIVE ? " active" : "");
+    const pct = Math.round((p.watched.length/ITEMS.length)*100);
+    div.innerHTML =
+      '<div onclick="switchProfile(\''+name.replace(/'/g,"\\'")+'\')" style="flex:1; cursor:pointer;">'+
+        '<div class="pname">'+name+'</div>'+
+        '<div class="pmeta">Started '+p.startDate+' · '+pct+'% watched</div>'+
+      '</div>'+
+      '<span class="pdel" onclick="deleteProfile(\''+name.replace(/'/g,"\\'")+'\')">×</span>';
+    listEl.appendChild(div);
+  });
+
+  const p = currentProfile();
+  document.getElementById("startDateRow").style.display = "flex";
+  document.getElementById("startDateActiveName").textContent = ACTIVE;
+  document.getElementById("editStart").value = p.startDate;
+  document.getElementById("newStart").value = TODAY_DEFAULT.toISOString().slice(0,10);
+}
+function switchProfile(name){
+  ACTIVE = name; saveActive();
+  document.getElementById("profilePanel").classList.remove("open");
+  renderAll();
+}
+function deleteProfile(name){
+  if(!confirm('Remove "'+name+'" and their progress? This can\'t be undone.')) return;
+  delete PROFILES[name];
+  saveProfiles();
+  const names = Object.keys(PROFILES);
+  if(names.length === 0){ ensureDefaultProfile(); }
+  else if(ACTIVE === name){ ACTIVE = names[0]; saveActive(); }
+  renderAll();
+}
+function handleCreateProfile(){
+  const nameInput = document.getElementById("newName");
+  const startInput = document.getElementById("newStart");
+  const name = nameInput.value.trim();
+  if(!name){ nameInput.focus(); return; }
+  if(PROFILES[name]){ alert("Someone with that name already exists — pick a different name or switch to them above."); return; }
+  const start = startInput.value || TODAY_DEFAULT.toISOString().slice(0,10);
+  PROFILES[name] = {startDate: start, watched: []};
+  ACTIVE = name;
+  saveProfiles(); saveActive();
+  nameInput.value = "";
+  document.getElementById("profilePanel").classList.remove("open");
+  renderAll();
+}
+function handleUpdateStart(){
+  const val = document.getElementById("editStart").value;
+  if(!val) return;
+  currentProfile().startDate = val;
+  saveProfiles();
+  document.getElementById("profilePanel").classList.remove("open");
+  renderAll();
+}
+
+/* ================= RENDER: THIS WEEK / SCHEDULE / CHECKLIST ================= */
+function renderThisWeek(weeks, curIdx){
+  const tag = document.getElementById("twTag");
+  const title = document.getElementById("twTitle");
+  const dates = document.getElementById("twDates");
+  const list = document.getElementById("twList");
+  list.innerHTML = "";
+
+  if(curIdx === -1){
+    tag.textContent = "Starts Soon";
+    title.textContent = ACTIVE + "'s Week 1";
+    dates.textContent = fmtRange(weeks[0].start, weeks[0].end);
+    weeks[0].indices.forEach(i=>list.appendChild(itemLi(i)));
+    return;
+  }
+  if(curIdx >= weeks.length){
+    tag.textContent = "Status";
+    title.textContent = "You're through " + ACTIVE + "'s whole schedule";
+    dates.textContent = "Catch any stragglers before Dec 18!";
+    return;
+  }
+  tag.textContent = "This Week";
+  title.textContent = ACTIVE + "'s Week " + (curIdx+1) + " of " + weeks.length;
+  dates.textContent = fmtRange(weeks[curIdx].start, weeks[curIdx].end);
+  weeks[curIdx].indices.forEach(i=>list.appendChild(itemLi(i)));
+}
+
+function renderSchedule(weeks, curIdx){
+  const container = document.getElementById("scheduleTable");
+  container.innerHTML = "";
+  const p = currentProfile();
+  weeks.forEach((wk,i)=>{
+    const row = document.createElement("div");
+    row.className = "week-row" + (i===curIdx ? " is-current" : "");
+    const titles = wk.indices.map(idx=>{
+      const item = ITEMS[idx];
+      return item.o ? '<span class="opt">'+item.t+' (opt)</span>' : item.t;
+    }).join(" · ") || '<span class="opt">— buffer week —</span>';
+    const doneCount = wk.indices.filter(idx=>p.watched.includes(idx)).length;
+    row.innerHTML =
+      '<div class="week-num mono">WK '+String(i+1).padStart(2,"0")+'</div>'+
+      '<div class="week-dates mono">'+fmtRange(wk.start,wk.end)+'</div>'+
+      '<div><div class="week-titles">'+titles+'</div><div class="week-prog mono">'+doneCount+'/'+wk.indices.length+' watched</div></div>';
+    container.appendChild(row);
+  });
+}
+
+function renderChecklist(){
+  const container = document.getElementById("phaseList");
+  container.innerHTML = "";
+  PHASES.forEach((phase,pi)=>{
+    const block = document.createElement("div");
+    block.className = "phase-block";
+    const head = document.createElement("div");
+    head.className = "phase-head";
+    head.innerHTML = '<div class="phase-num">'+(pi+1)+'</div><h3 class="display">'+phase.name+'</h3>';
+    block.appendChild(head);
+    const prog = document.createElement("div");
+    prog.className = "phase-progress mono";
+    prog.id = "phase-prog-"+pi;
+    block.appendChild(prog);
+    const ul = document.createElement("ul");
+    ul.className = "checklist";
+    for(let idx=phase.start; idx<=phase.end; idx++) ul.appendChild(itemLi(idx));
+    block.appendChild(ul);
+    container.appendChild(block);
+  });
+  const finaleList = document.getElementById("finaleList");
+  finaleList.innerHTML = "";
+  finaleList.appendChild(itemLi(FINALE_IDX));
+}
+
+function updateProgressStats(){
+  const p = currentProfile();
+  const total = ITEMS.length;
+  const done = p.watched.length;
+  const pct = Math.round((done/total)*100);
+  document.getElementById("pctNum").textContent = pct + "%";
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressText").innerHTML = "<strong>"+done+"</strong> of "+total+" watched — "+ACTIVE;
+
+  PHASES.forEach((phase,pi)=>{
+    const el = document.getElementById("phase-prog-"+pi);
+    if(!el) return;
+    let c=0;
+    for(let idx=phase.start; idx<=phase.end; idx++) if(p.watched.includes(idx)) c++;
+    el.textContent = c + " / " + (phase.end-phase.start+1) + " watched";
+  });
+
+  const weeks = chunkForStart(new Date(p.startDate + "T00:00:00"));
+  document.querySelectorAll(".week-row").forEach((row,i)=>{
+    const wk = weeks[i]; if(!wk) return;
+    const doneCount = wk.indices.filter(idx=>p.watched.includes(idx)).length;
+    const progEl = row.querySelector(".week-prog");
+    if(progEl) progEl.textContent = doneCount+'/'+wk.indices.length+' watched';
+  });
+}
+
+/* ================= PACE NOTE ================= */
+function renderPaceNote(weeks, startDate){
+  const note = document.getElementById("paceNote");
+  const idealWeeks = 19;
+  if(weeks.length < idealWeeks - 1){
+    note.textContent = "⚡ Starting " + startDate.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + " means a tighter pace — about " + Math.ceil(ITEMS.length/weeks.length) + " titles/week to make it by Dec 18.";
+  } else {
+    note.textContent = "";
+  }
+}
+
+/* ================= MAIN RENDER ================= */
+function renderAll(){
+  const p = currentProfile();
+  const startDate = new Date(p.startDate + "T00:00:00");
+  const weeks = chunkForStart(startDate);
+  const curIdx = findCurrentWeekIndex(weeks);
+
+  renderProfileUI();
+  renderThisWeek(weeks, curIdx);
+  renderSchedule(weeks, curIdx);
+  renderChecklist();
+  updateProgressStats();
+  renderPaceNote(weeks, startDate);
+}
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  if(confirm("Reset "+ACTIVE+"'s watched progress? This can't be undone.")){
+    currentProfile().watched = [];
+    saveProfiles();
+    renderAll();
+  }
+});
+
+/* ================= PWA: INSTALL + SERVICE WORKER ================= */
+let deferredInstallPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById("installRow").style.display = "flex";
+});
+
+document.getElementById("installBtn").addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  document.getElementById("installRow").style.display = "none";
+});
+
+window.addEventListener("appinstalled", () => {
+  document.getElementById("installRow").style.display = "none";
+});
+
+(function showIosHintIfNeeded(){
+  const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true ||
+    window.matchMedia("(display-mode: standalone)").matches;
+  if (isIos && !isStandalone) {
+    document.getElementById("iosInstallNote").style.display = "flex";
+  }
+})();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {
+      // offline support just won't be available — the page still works fine online
+    });
+  });
+}
+
+/* ================= INIT ================= */
+loadProfiles();
+ensureDefaultProfile();
+renderAll();
+</script>
+
+</body>
+</html>
