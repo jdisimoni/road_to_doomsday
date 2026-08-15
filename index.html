@@ -60,6 +60,40 @@
     padding:12px 22px; cursor:pointer; display:flex; align-items:center; gap:8px;
   }
   .signin-btn:hover{background:#e0ac1c;}
+  .auth-card{
+    background:var(--panel); border:2px solid var(--paper); padding:26px;
+    max-width:360px; width:100%; text-align:left;
+  }
+  .auth-card h4{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; text-align:center;}
+  .oauth-btn{
+    width:100%; font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.02em;
+    border:none; padding:12px 16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-bottom:10px; font-weight:600;
+  }
+  .oauth-btn.google{background:var(--paper); color:var(--black);}
+  .oauth-btn.google:hover{background:#ddd9cd;}
+  .oauth-btn.apple{background:#000; color:#fff; border:1px solid #444;}
+  .oauth-btn.apple:hover{background:#1a1a1a;}
+  .auth-divider{
+    display:flex; align-items:center; gap:10px; margin:16px 0;
+    font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); letter-spacing:0.1em;
+  }
+  .auth-divider::before, .auth-divider::after{content:""; flex:1; height:1px; background:var(--hairline);}
+  .auth-card input{
+    width:100%; background:var(--black); border:1px solid var(--hairline); color:var(--paper);
+    padding:9px 10px; font-family:'Public Sans', sans-serif; font-size:14px; margin-bottom:10px;
+  }
+  .email-btn-row{display:flex; gap:8px; margin-top:4px;}
+  .email-btn-row button{
+    flex:1; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.03em;
+    padding:10px; cursor:pointer; border:1px solid var(--hairline); background:transparent; color:var(--paper);
+  }
+  .email-btn-row button.primary{background:var(--red); border-color:var(--red); color:var(--paper);}
+  .email-btn-row button.primary:hover{background:var(--red-deep);}
+  .email-btn-row button:not(.primary):hover{border-color:var(--gold); color:var(--gold);}
+  .auth-status{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--red); margin-top:10px; min-height:14px;}
+  .auth-status.ok{color:var(--vibranium, var(--gold));}
+  .forgot-link{display:block; text-align:center; margin-top:12px;}
   .user-pill{
     font-family:'IBM Plex Mono', monospace; font-size:13px;
     background:var(--panel); border:2px solid var(--gold); color:var(--paper);
@@ -185,7 +219,20 @@
     <p class="subtitle">Full MCU chronological watch order — every movie, One-Shot, and Disney+ series — synced to your account, paced to your own start date.</p>
 
     <div class="auth-bar" id="signedOutBar">
-      <button class="signin-btn" id="signInBtn">🔐 Sign in with Google to start tracking</button>
+      <div class="auth-card">
+        <h4>Sign In To Track Your Progress</h4>
+        <button class="oauth-btn google" id="signInGoogleBtn">Continue with Google</button>
+        <button class="oauth-btn apple" id="signInAppleBtn">Continue with Apple</button>
+        <div class="auth-divider">OR EMAIL</div>
+        <input type="email" id="emailInput" placeholder="Email address" autocomplete="email">
+        <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password">
+        <div class="email-btn-row">
+          <button class="primary" id="emailSignInBtn">Sign In</button>
+          <button id="emailSignUpBtn">Create Account</button>
+        </div>
+        <button class="mini-link forgot-link" id="forgotPasswordLink">Forgot password?</button>
+        <div class="auth-status" id="authStatus"></div>
+      </div>
     </div>
     <div class="auth-bar" id="signedInBar" style="display:none;">
       <div class="user-pill">
@@ -277,7 +324,8 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot
@@ -297,6 +345,7 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const provider = new GoogleAuthProvider();
+const appleProvider = new OAuthProvider('apple.com');
 
 /* ================= STATIC DATA ================= */
 const DOOMSDAY = new Date("2026-12-18T00:00:00");
@@ -573,10 +622,53 @@ document.getElementById("resetBtn").addEventListener("click", async ()=>{
 });
 
 /* ================= AUTH UI ================= */
-document.getElementById("signInBtn").addEventListener("click", async ()=>{
+document.getElementById("signInGoogleBtn").addEventListener("click", async ()=>{
   try{ await signInWithPopup(auth, provider); }
-  catch(e){ alert("Sign-in didn't go through: " + e.message); }
+  catch(e){ showAuthStatus(friendlyAuthError(e), false); }
 });
+document.getElementById("signInAppleBtn").addEventListener("click", async ()=>{
+  try{ await signInWithPopup(auth, appleProvider); }
+  catch(e){ showAuthStatus(friendlyAuthError(e), false); }
+});
+document.getElementById("emailSignInBtn").addEventListener("click", async ()=>{
+  const email = document.getElementById("emailInput").value.trim();
+  const pw = document.getElementById("passwordInput").value;
+  if(!email || !pw){ showAuthStatus("Enter an email and password first.", false); return; }
+  try{ await signInWithEmailAndPassword(auth, email, pw); }
+  catch(e){ showAuthStatus(friendlyAuthError(e), false); }
+});
+document.getElementById("emailSignUpBtn").addEventListener("click", async ()=>{
+  const email = document.getElementById("emailInput").value.trim();
+  const pw = document.getElementById("passwordInput").value;
+  if(!email || !pw){ showAuthStatus("Enter an email and password first.", false); return; }
+  if(pw.length < 6){ showAuthStatus("Password needs to be at least 6 characters.", false); return; }
+  try{ await createUserWithEmailAndPassword(auth, email, pw); }
+  catch(e){ showAuthStatus(friendlyAuthError(e), false); }
+});
+document.getElementById("forgotPasswordLink").addEventListener("click", async ()=>{
+  const email = document.getElementById("emailInput").value.trim();
+  if(!email){ showAuthStatus("Enter your email above first, then tap this again.", false); return; }
+  try{
+    await sendPasswordResetEmail(auth, email);
+    showAuthStatus("Password reset email sent — check your inbox.", true);
+  }catch(e){ showAuthStatus(friendlyAuthError(e), false); }
+});
+function showAuthStatus(msg, ok){
+  const el = document.getElementById("authStatus");
+  el.textContent = msg;
+  el.classList.toggle("ok", !!ok);
+}
+function friendlyAuthError(e){
+  const code = e && e.code ? e.code : "";
+  if(code.includes("wrong-password") || code.includes("invalid-credential")) return "Incorrect email or password.";
+  if(code.includes("user-not-found")) return "No account with that email — try Create Account.";
+  if(code.includes("email-already-in-use")) return "That email's already registered — try Sign In instead.";
+  if(code.includes("popup-closed-by-user")) return "Sign-in window closed before finishing.";
+  if(code.includes("weak-password")) return "Password needs to be at least 6 characters.";
+  if(code.includes("invalid-email")) return "That email address doesn't look right.";
+  if(code.includes("unauthorized-domain")) return "This domain isn't authorized yet in Firebase — add it under Authentication → Settings → Authorized domains.";
+  return "Something went wrong signing in — try again.";
+}
 document.getElementById("signOutBtn").addEventListener("click", async ()=>{
   await signOut(auth);
 });
@@ -600,6 +692,9 @@ function showSignedOutUI(){
   document.getElementById("progressBlock").style.display = "none";
   document.getElementById("gateMsg").style.display = "block";
   document.getElementById("appContent").style.display = "none";
+  document.getElementById("emailInput").value = "";
+  document.getElementById("passwordInput").value = "";
+  document.getElementById("authStatus").textContent = "";
 }
 function showSignedInUI(user){
   document.getElementById("signedOutBar").style.display = "none";
