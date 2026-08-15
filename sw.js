@@ -1,5 +1,5 @@
 // Bump this version string any time you update index.html so phones pick up the change.
-const CACHE_NAME = "doomsday-watch-v1";
+const CACHE_NAME = "doomsday-watch-v2";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
@@ -26,9 +26,14 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Network-first for the HTML shell (so edits show up quickly), cache-first for everything else.
+// Only handle requests for this site's own files. Firebase auth/Firestore calls,
+// Google Fonts, etc. are cross-origin — leave those alone so login and sync work normally.
 self.addEventListener("fetch", (event) => {
   const req = event.request;
+  if (new URL(req.url).origin !== self.location.origin) {
+    return; // don't call respondWith — browser handles it natively
+  }
+
   if (req.mode === "navigate" || req.url.endsWith(".html")) {
     event.respondWith(
       fetch(req)

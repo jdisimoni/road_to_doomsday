@@ -52,50 +52,41 @@
   h1.title .red{color:var(--red); text-shadow:3px 3px 0 #000;}
   .subtitle{color:var(--muted); font-size:15px; margin-top:14px; max-width:520px; margin-left:auto; margin-right:auto;}
 
-  /* profile bar */
-  .profile-bar{ margin-top:28px; display:flex; justify-content:center; }
-  .profile-pill{
+  /* auth bar */
+  .auth-bar{ margin-top:28px; display:flex; justify-content:center; }
+  .signin-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.03em;
+    background:var(--gold); color:var(--black); border:none; font-weight:600;
+    padding:12px 22px; cursor:pointer; display:flex; align-items:center; gap:8px;
+  }
+  .signin-btn:hover{background:#e0ac1c;}
+  .user-pill{
     font-family:'IBM Plex Mono', monospace; font-size:13px;
     background:var(--panel); border:2px solid var(--gold); color:var(--paper);
-    padding:8px 16px; cursor:pointer; display:flex; align-items:center; gap:8px;
+    padding:8px 16px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center;
   }
-  .profile-pill strong{color:var(--gold);}
-  .profile-pill:hover{border-color:var(--red);}
+  .user-pill strong{color:var(--gold);}
+  .mini-link{
+    background:none; border:none; color:var(--muted); font-family:'IBM Plex Mono', monospace;
+    font-size:11px; text-decoration:underline; cursor:pointer; padding:0;
+  }
+  .mini-link:hover{color:var(--red);}
 
-  .profile-panel{
-    display:none; margin:14px auto 0; max-width:420px; background:var(--panel);
-    border:2px solid var(--paper); padding:20px; text-align:left;
+  .start-edit-panel{
+    display:none; margin:14px auto 0; max-width:360px; background:var(--panel);
+    border:2px solid var(--paper); padding:18px 20px; text-align:left;
   }
-  .profile-panel.open{display:block;}
-  .profile-panel h4{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:12px;}
-  .profile-item{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:9px 10px; border:1px solid var(--hairline); margin-bottom:8px; cursor:pointer;
-  }
-  .profile-item:hover{border-color:var(--red);}
-  .profile-item.active{border-color:var(--gold); background:rgba(255,199,44,0.08);}
-  .profile-item .pname{font-weight:600; font-size:14px;}
-  .profile-item .pmeta{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted);}
-  .profile-item .pdel{color:var(--muted); font-size:16px; padding:0 6px;}
-  .profile-item .pdel:hover{color:var(--red);}
-  .add-person{margin-top:14px; border-top:1px solid var(--hairline); padding-top:14px;}
-  .add-person label{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); display:block; margin-bottom:4px; margin-top:10px;}
-  .add-person input{
+  .start-edit-panel.open{display:block;}
+  .start-edit-panel label{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); display:block; margin-bottom:6px;}
+  .start-edit-panel input{
     width:100%; background:var(--black); border:1px solid var(--hairline); color:var(--paper);
-    padding:8px 10px; font-family:'Public Sans', sans-serif; font-size:14px;
+    padding:8px 10px; font-family:'IBM Plex Mono', monospace; font-size:13px; margin-bottom:12px;
   }
-  .add-person button{
-    margin-top:14px; width:100%; background:var(--red); color:var(--paper); border:none;
+  .start-edit-panel button{
+    width:100%; background:var(--red); color:var(--paper); border:none;
     padding:10px; font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.05em; cursor:pointer;
   }
-  .add-person button:hover{background:var(--red-deep);}
-  .startdate-row{
-    display:flex; align-items:center; gap:8px; margin-top:14px; border-top:1px solid var(--hairline); padding-top:14px;
-    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);
-  }
-  .startdate-row input{
-    background:var(--black); border:1px solid var(--hairline); color:var(--paper); padding:5px 8px; font-family:'IBM Plex Mono', monospace; font-size:12px;
-  }
+  .start-edit-panel button:hover{background:var(--red-deep);}
 
   .clock{display:flex; justify-content:center; gap:12px; margin:32px 0 18px; flex-wrap:wrap;}
   .clock .segment{background:var(--panel); border:2px solid var(--red); padding:12px 16px; min-width:80px; box-shadow:4px 4px 0 var(--red-deep);}
@@ -117,6 +108,7 @@
   .progress-text{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--muted); text-align:center; margin-top:10px;}
   .progress-text strong{color:var(--paper);}
   .pace-note{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--gold); text-align:center; margin-top:6px; max-width:480px; margin-left:auto; margin-right:auto;}
+  .sync-note{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); text-align:center; margin-top:10px;}
   .install-row{display:flex; justify-content:center; margin-top:18px;}
   .install-btn{
     font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.04em;
@@ -125,6 +117,12 @@
   .install-btn:hover{background:#e0ac1c;}
   .ios-hint{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);}
   .ios-hint strong{color:var(--gold);}
+
+  /* gate / loading */
+  .gate-msg{
+    max-width:480px; margin:40px auto 0; text-align:center; color:var(--muted);
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+  }
 
   section.this-week{padding:44px 0 8px;}
   .card-thisweek{background:var(--panel); border:3px solid var(--paper); box-shadow:6px 6px 0 var(--red); padding:26px 28px;}
@@ -184,27 +182,24 @@
   <div class="wrap hero-inner">
     <span class="eyebrow">Mission Briefing</span>
     <h1 class="title display">The Road to <span class="red">Doomsday</span></h1>
-    <p class="subtitle">Full MCU chronological watch order — every movie, One-Shot, and Disney+ series — with a personal pace and progress tracker for everyone watching.</p>
+    <p class="subtitle">Full MCU chronological watch order — every movie, One-Shot, and Disney+ series — synced to your account, paced to your own start date.</p>
 
-    <div class="profile-bar">
-      <div class="profile-pill" id="profilePill" onclick="togglePanel()">🎭 Watching as: <strong id="activeName">—</strong> ▾</div>
+    <div class="auth-bar" id="signedOutBar">
+      <button class="signin-btn" id="signInBtn">🔐 Sign in with Google to start tracking</button>
     </div>
-    <div class="profile-panel" id="profilePanel">
-      <h4>Switch Person</h4>
-      <div id="profileListEl"></div>
-      <div class="add-person">
-        <h4 style="margin-bottom:0;">Add Another Person</h4>
-        <label>Name</label>
-        <input type="text" id="newName" placeholder="e.g. Sarah">
-        <label>Start date</label>
-        <input type="date" id="newStart">
-        <button onclick="handleCreateProfile()">Start Watching</button>
+    <div class="auth-bar" id="signedInBar" style="display:none;">
+      <div class="user-pill">
+        👤 <strong id="userName">—</strong>
+        <span class="mono" style="color:var(--muted);">·</span>
+        <button class="mini-link" id="editStartLink">edit start date</button>
+        <span class="mono" style="color:var(--muted);">·</span>
+        <button class="mini-link" id="signOutBtn">sign out</button>
       </div>
-      <div class="startdate-row" id="startDateRow" style="display:none;">
-        Adjust <span id="startDateActiveName" style="color:var(--paper);">&nbsp;</span>'s start date:
-        <input type="date" id="editStart">
-        <button onclick="handleUpdateStart()" style="background:none; border:1px solid var(--hairline); color:var(--paper); padding:5px 10px; cursor:pointer; font-family:'IBM Plex Mono', monospace; font-size:11px;">Save</button>
-      </div>
+    </div>
+    <div class="start-edit-panel" id="startEditPanel">
+      <label>Your start date</label>
+      <input type="date" id="editStartInput">
+      <button id="saveStartBtn">Save</button>
     </div>
 
     <div class="clock">
@@ -215,12 +210,16 @@
     </div>
     <div class="clock-caption">until <strong>Avengers: Doomsday</strong> — theaters, Dec 18, 2026</div>
 
-    <div class="progress-wrap">
-      <div class="burst"><div class="pct mono" id="pctNum">0%</div><div class="pct-label">Watched</div></div>
-      <div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+    <div id="progressBlock" style="display:none;">
+      <div class="progress-wrap">
+        <div class="burst"><div class="pct mono" id="pctNum">0%</div><div class="pct-label">Watched</div></div>
+        <div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="progress-text" id="progressText">0 of 82 watched</div>
+      <div class="pace-note" id="paceNote"></div>
+      <div class="sync-note">☁️ Synced to your account — signing in on any device shows this same progress</div>
     </div>
-    <div class="progress-text" id="progressText">0 of 82 watched</div>
-    <div class="pace-note" id="paceNote"></div>
+    <div class="gate-msg" id="gateMsg">Sign in above to save your progress and get a watch pace built around your own start date.</div>
 
     <div class="install-row" id="installRow" style="display:none;">
       <button id="installBtn" class="install-btn">📲 Add to Home Screen</button>
@@ -233,6 +232,7 @@
 
 <div class="stripe"></div>
 
+<div id="appContent" style="display:none;">
 <section class="this-week">
   <div class="wrap">
     <div class="card-thisweek" id="thisWeekCard">
@@ -255,7 +255,7 @@
 <section class="divider-top">
   <div class="wrap">
     <h2 class="section-title display">Full Checklist</h2>
-    <p class="section-sub">Every title, in-universe order, grouped by Phase. <span class="opt-tag">OPT</span> marks the Netflix-era shows — connected to the MCU but not essential for Doomsday. Progress saves automatically for whoever's selected above.</p>
+    <p class="section-sub">Every title, in-universe order, grouped by Phase. <span class="opt-tag">OPT</span> marks the Netflix-era shows — connected to the MCU but not essential for Doomsday. Progress saves automatically to your account.</p>
     <div id="phaseList"></div>
 
     <div class="finale-block">
@@ -265,15 +265,39 @@
       <ul class="watch-list" id="finaleList" style="margin-top:14px;"></ul>
     </div>
 
-    <div class="reset-row"><button id="resetBtn">Reset this person's progress</button></div>
+    <div class="reset-row"><button id="resetBtn">Reset my progress</button></div>
   </div>
 </section>
+</div>
 
 <footer>
-  Built for the Doomsday marathon · Chronological order per Marvel's official MCU timeline · Each person's progress and pace saves separately in this browser
+  Built for the Doomsday marathon · Chronological order per Marvel's official MCU timeline · Signed-in progress syncs across your devices
 </footer>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCIR7YdELDE6fAtEpJkMzxvlWoxYD2KiKA",
+  authDomain: "mcu-doomsday-watch.firebaseapp.com",
+  projectId: "mcu-doomsday-watch",
+  storageBucket: "mcu-doomsday-watch.firebasestorage.app",
+  messagingSenderId: "1032265394343",
+  appId: "1:1032265394343:web:816f3e0d05bf5023d9d382",
+  measurementId: "G-SHHBFZZG8R"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const provider = new GoogleAuthProvider();
+
 /* ================= STATIC DATA ================= */
 const DOOMSDAY = new Date("2026-12-18T00:00:00");
 const TODAY_DEFAULT = new Date(); TODAY_DEFAULT.setHours(0,0,0,0);
@@ -309,35 +333,56 @@ const PHASES = [
   {name:"Phase 6 · Countdown to Doomsday", start:71, end:80}
 ];
 
-/* ================= PROFILE STORE ================= */
-const PROFILES_KEY = "mcu-profiles-v2";
-const ACTIVE_KEY = "mcu-active-profile-v2";
-let PROFILES = {};
-let ACTIVE = null;
+/* ================= USER STATE ================= */
+let CURRENT_USER = null;          // Firebase auth user object
+let USER_DATA = null;             // { startDate, watched: [] } — mirrored from Firestore
+let unsubscribeDoc = null;
 
-function loadProfiles(){
-  try{ PROFILES = JSON.parse(localStorage.getItem(PROFILES_KEY)) || {}; }catch(e){ PROFILES = {}; }
-  try{ ACTIVE = localStorage.getItem(ACTIVE_KEY); }catch(e){ ACTIVE = null; }
-  if(!ACTIVE || !PROFILES[ACTIVE]){
-    const names = Object.keys(PROFILES);
-    ACTIVE = names.length ? names[0] : null;
-  }
-}
-function saveProfiles(){ try{ localStorage.setItem(PROFILES_KEY, JSON.stringify(PROFILES)); }catch(e){} }
-function saveActive(){ try{ localStorage.setItem(ACTIVE_KEY, ACTIVE); }catch(e){} }
+function userDocRef(uid){ return doc(db, "users", uid); }
 
-function ensureDefaultProfile(){
-  if(Object.keys(PROFILES).length === 0){
-    const iso = TODAY_DEFAULT.toISOString().slice(0,10);
-    PROFILES["Me"] = {startDate: iso, watched: []};
-    ACTIVE = "Me";
-    saveProfiles(); saveActive();
+async function ensureUserDoc(uid){
+  const ref = userDocRef(uid);
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref, { startDate: TODAY_DEFAULT.toISOString().slice(0,10), watched: [] });
   }
 }
 
-function currentProfile(){ return PROFILES[ACTIVE]; }
+function subscribeUserDoc(uid){
+  if(unsubscribeDoc) unsubscribeDoc();
+  unsubscribeDoc = onSnapshot(userDocRef(uid), (snap)=>{
+    if(!snap.exists()) return;
+    const data = snap.data();
+    USER_DATA = { startDate: data.startDate || TODAY_DEFAULT.toISOString().slice(0,10), watched: data.watched || [] };
+    renderAll();
+  }, (err)=>{
+    console.error("Sync error:", err);
+  });
+}
 
-/* ================= DYNAMIC SCHEDULE PER PROFILE ================= */
+async function toggleWatched(idx){
+  if(!USER_DATA || !CURRENT_USER) return;
+  const set = new Set(USER_DATA.watched);
+  if(set.has(idx)) set.delete(idx); else set.add(idx);
+  const newWatched = [...set];
+  USER_DATA.watched = newWatched; // optimistic local update
+  syncCheckboxDom(idx, set.has(idx));
+  updateProgressStats();
+  try{
+    await updateDoc(userDocRef(CURRENT_USER.uid), { watched: newWatched });
+  }catch(e){
+    console.error("Failed to save:", e);
+  }
+}
+function syncCheckboxDom(idx, isWatched){
+  document.querySelectorAll('[data-idx="'+idx+'"]').forEach(cb=>{
+    cb.checked = isWatched;
+    const li = cb.closest("li");
+    if(li) li.classList.toggle("watched", isWatched);
+  });
+}
+
+/* ================= SCHEDULE MATH ================= */
 function chunkForStart(startDate){
   const total = ITEMS.length;
   const msWeek = 7*86400000;
@@ -358,7 +403,6 @@ function chunkForStart(startDate){
   }
   return weeks;
 }
-
 function findCurrentWeekIndex(weeks){
   const now = new Date(); now.setHours(12,0,0,0);
   for(let i=0;i<weeks.length;i++){
@@ -376,8 +420,7 @@ function fmtRange(s,e){
 }
 function itemLi(idx){
   const item = ITEMS[idx];
-  const p = currentProfile();
-  const isW = p.watched.includes(idx);
+  const isW = USER_DATA.watched.includes(idx);
   const li = document.createElement("li");
   if(isW) li.classList.add("watched");
   const cbId = "cb-" + idx;
@@ -386,19 +429,6 @@ function itemLi(idx){
     '<label class="trk-label" for="'+cbId+'">' + item.t + (item.o ? ' <span class="opt-tag">OPT</span>' : '') + '</label>';
   li.querySelector("input").addEventListener("change", ()=>toggleWatched(idx));
   return li;
-}
-function toggleWatched(idx){
-  const p = currentProfile();
-  const pos = p.watched.indexOf(idx);
-  if(pos === -1) p.watched.push(idx); else p.watched.splice(pos,1);
-  saveProfiles();
-  document.querySelectorAll('[data-idx="'+idx+'"]').forEach(cb=>{
-    const isW = p.watched.includes(idx);
-    cb.checked = isW;
-    const li = cb.closest("li");
-    if(li) li.classList.toggle("watched", isW);
-  });
-  updateProgressStats();
 }
 
 /* ================= CLOCK (universal) ================= */
@@ -412,71 +442,6 @@ function renderClock(){
 }
 renderClock(); setInterval(renderClock,1000);
 
-/* ================= RENDER: PROFILE UI ================= */
-function togglePanel(){
-  document.getElementById("profilePanel").classList.toggle("open");
-}
-function renderProfileUI(){
-  document.getElementById("activeName").textContent = ACTIVE;
-  const listEl = document.getElementById("profileListEl");
-  listEl.innerHTML = "";
-  Object.keys(PROFILES).forEach(name=>{
-    const p = PROFILES[name];
-    const div = document.createElement("div");
-    div.className = "profile-item" + (name===ACTIVE ? " active" : "");
-    const pct = Math.round((p.watched.length/ITEMS.length)*100);
-    div.innerHTML =
-      '<div onclick="switchProfile(\''+name.replace(/'/g,"\\'")+'\')" style="flex:1; cursor:pointer;">'+
-        '<div class="pname">'+name+'</div>'+
-        '<div class="pmeta">Started '+p.startDate+' · '+pct+'% watched</div>'+
-      '</div>'+
-      '<span class="pdel" onclick="deleteProfile(\''+name.replace(/'/g,"\\'")+'\')">×</span>';
-    listEl.appendChild(div);
-  });
-
-  const p = currentProfile();
-  document.getElementById("startDateRow").style.display = "flex";
-  document.getElementById("startDateActiveName").textContent = ACTIVE;
-  document.getElementById("editStart").value = p.startDate;
-  document.getElementById("newStart").value = TODAY_DEFAULT.toISOString().slice(0,10);
-}
-function switchProfile(name){
-  ACTIVE = name; saveActive();
-  document.getElementById("profilePanel").classList.remove("open");
-  renderAll();
-}
-function deleteProfile(name){
-  if(!confirm('Remove "'+name+'" and their progress? This can\'t be undone.')) return;
-  delete PROFILES[name];
-  saveProfiles();
-  const names = Object.keys(PROFILES);
-  if(names.length === 0){ ensureDefaultProfile(); }
-  else if(ACTIVE === name){ ACTIVE = names[0]; saveActive(); }
-  renderAll();
-}
-function handleCreateProfile(){
-  const nameInput = document.getElementById("newName");
-  const startInput = document.getElementById("newStart");
-  const name = nameInput.value.trim();
-  if(!name){ nameInput.focus(); return; }
-  if(PROFILES[name]){ alert("Someone with that name already exists — pick a different name or switch to them above."); return; }
-  const start = startInput.value || TODAY_DEFAULT.toISOString().slice(0,10);
-  PROFILES[name] = {startDate: start, watched: []};
-  ACTIVE = name;
-  saveProfiles(); saveActive();
-  nameInput.value = "";
-  document.getElementById("profilePanel").classList.remove("open");
-  renderAll();
-}
-function handleUpdateStart(){
-  const val = document.getElementById("editStart").value;
-  if(!val) return;
-  currentProfile().startDate = val;
-  saveProfiles();
-  document.getElementById("profilePanel").classList.remove("open");
-  renderAll();
-}
-
 /* ================= RENDER: THIS WEEK / SCHEDULE / CHECKLIST ================= */
 function renderThisWeek(weeks, curIdx){
   const tag = document.getElementById("twTag");
@@ -487,19 +452,19 @@ function renderThisWeek(weeks, curIdx){
 
   if(curIdx === -1){
     tag.textContent = "Starts Soon";
-    title.textContent = ACTIVE + "'s Week 1";
+    title.textContent = "Week 1";
     dates.textContent = fmtRange(weeks[0].start, weeks[0].end);
     weeks[0].indices.forEach(i=>list.appendChild(itemLi(i)));
     return;
   }
   if(curIdx >= weeks.length){
     tag.textContent = "Status";
-    title.textContent = "You're through " + ACTIVE + "'s whole schedule";
+    title.textContent = "You're through your whole schedule";
     dates.textContent = "Catch any stragglers before Dec 18!";
     return;
   }
   tag.textContent = "This Week";
-  title.textContent = ACTIVE + "'s Week " + (curIdx+1) + " of " + weeks.length;
+  title.textContent = "Week " + (curIdx+1) + " of " + weeks.length;
   dates.textContent = fmtRange(weeks[curIdx].start, weeks[curIdx].end);
   weeks[curIdx].indices.forEach(i=>list.appendChild(itemLi(i)));
 }
@@ -507,7 +472,6 @@ function renderThisWeek(weeks, curIdx){
 function renderSchedule(weeks, curIdx){
   const container = document.getElementById("scheduleTable");
   container.innerHTML = "";
-  const p = currentProfile();
   weeks.forEach((wk,i)=>{
     const row = document.createElement("div");
     row.className = "week-row" + (i===curIdx ? " is-current" : "");
@@ -515,7 +479,7 @@ function renderSchedule(weeks, curIdx){
       const item = ITEMS[idx];
       return item.o ? '<span class="opt">'+item.t+' (opt)</span>' : item.t;
     }).join(" · ") || '<span class="opt">— buffer week —</span>';
-    const doneCount = wk.indices.filter(idx=>p.watched.includes(idx)).length;
+    const doneCount = wk.indices.filter(idx=>USER_DATA.watched.includes(idx)).length;
     row.innerHTML =
       '<div class="week-num mono">WK '+String(i+1).padStart(2,"0")+'</div>'+
       '<div class="week-dates mono">'+fmtRange(wk.start,wk.end)+'</div>'+
@@ -550,32 +514,30 @@ function renderChecklist(){
 }
 
 function updateProgressStats(){
-  const p = currentProfile();
   const total = ITEMS.length;
-  const done = p.watched.length;
+  const done = USER_DATA.watched.length;
   const pct = Math.round((done/total)*100);
   document.getElementById("pctNum").textContent = pct + "%";
   document.getElementById("progressFill").style.width = pct + "%";
-  document.getElementById("progressText").innerHTML = "<strong>"+done+"</strong> of "+total+" watched — "+ACTIVE;
+  document.getElementById("progressText").innerHTML = "<strong>"+done+"</strong> of "+total+" watched";
 
   PHASES.forEach((phase,pi)=>{
     const el = document.getElementById("phase-prog-"+pi);
     if(!el) return;
     let c=0;
-    for(let idx=phase.start; idx<=phase.end; idx++) if(p.watched.includes(idx)) c++;
+    for(let idx=phase.start; idx<=phase.end; idx++) if(USER_DATA.watched.includes(idx)) c++;
     el.textContent = c + " / " + (phase.end-phase.start+1) + " watched";
   });
 
-  const weeks = chunkForStart(new Date(p.startDate + "T00:00:00"));
+  const weeks = chunkForStart(new Date(USER_DATA.startDate + "T00:00:00"));
   document.querySelectorAll(".week-row").forEach((row,i)=>{
     const wk = weeks[i]; if(!wk) return;
-    const doneCount = wk.indices.filter(idx=>p.watched.includes(idx)).length;
+    const doneCount = wk.indices.filter(idx=>USER_DATA.watched.includes(idx)).length;
     const progEl = row.querySelector(".week-prog");
     if(progEl) progEl.textContent = doneCount+'/'+wk.indices.length+' watched';
   });
 }
 
-/* ================= PACE NOTE ================= */
 function renderPaceNote(weeks, startDate){
   const note = document.getElementById("paceNote");
   const idealWeeks = 19;
@@ -588,12 +550,11 @@ function renderPaceNote(weeks, startDate){
 
 /* ================= MAIN RENDER ================= */
 function renderAll(){
-  const p = currentProfile();
-  const startDate = new Date(p.startDate + "T00:00:00");
+  if(!CURRENT_USER || !USER_DATA) return;
+  const startDate = new Date(USER_DATA.startDate + "T00:00:00");
   const weeks = chunkForStart(startDate);
   const curIdx = findCurrentWeekIndex(weeks);
 
-  renderProfileUI();
   renderThisWeek(weeks, curIdx);
   renderSchedule(weeks, curIdx);
   renderChecklist();
@@ -601,23 +562,75 @@ function renderAll(){
   renderPaceNote(weeks, startDate);
 }
 
-document.getElementById("resetBtn").addEventListener("click", ()=>{
-  if(confirm("Reset "+ACTIVE+"'s watched progress? This can't be undone.")){
-    currentProfile().watched = [];
-    saveProfiles();
-    renderAll();
+document.getElementById("resetBtn").addEventListener("click", async ()=>{
+  if(!CURRENT_USER) return;
+  if(confirm("Reset your watched progress? This can't be undone.")){
+    USER_DATA.watched = [];
+    updateProgressStats();
+    document.querySelectorAll("input.trk").forEach(cb=>{ cb.checked=false; cb.closest("li").classList.remove("watched"); });
+    try{ await updateDoc(userDocRef(CURRENT_USER.uid), { watched: [] }); }catch(e){ console.error(e); }
+  }
+});
+
+/* ================= AUTH UI ================= */
+document.getElementById("signInBtn").addEventListener("click", async ()=>{
+  try{ await signInWithPopup(auth, provider); }
+  catch(e){ alert("Sign-in didn't go through: " + e.message); }
+});
+document.getElementById("signOutBtn").addEventListener("click", async ()=>{
+  await signOut(auth);
+});
+document.getElementById("editStartLink").addEventListener("click", ()=>{
+  const panel = document.getElementById("startEditPanel");
+  document.getElementById("editStartInput").value = USER_DATA.startDate;
+  panel.classList.toggle("open");
+});
+document.getElementById("saveStartBtn").addEventListener("click", async ()=>{
+  const val = document.getElementById("editStartInput").value;
+  if(!val || !CURRENT_USER) return;
+  document.getElementById("startEditPanel").classList.remove("open");
+  try{ await updateDoc(userDocRef(CURRENT_USER.uid), { startDate: val }); }
+  catch(e){ console.error(e); }
+});
+
+function showSignedOutUI(){
+  document.getElementById("signedOutBar").style.display = "flex";
+  document.getElementById("signedInBar").style.display = "none";
+  document.getElementById("startEditPanel").classList.remove("open");
+  document.getElementById("progressBlock").style.display = "none";
+  document.getElementById("gateMsg").style.display = "block";
+  document.getElementById("appContent").style.display = "none";
+}
+function showSignedInUI(user){
+  document.getElementById("signedOutBar").style.display = "none";
+  document.getElementById("signedInBar").style.display = "flex";
+  document.getElementById("userName").textContent = user.displayName || user.email || "You";
+  document.getElementById("progressBlock").style.display = "block";
+  document.getElementById("gateMsg").style.display = "none";
+  document.getElementById("appContent").style.display = "block";
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  if(user){
+    CURRENT_USER = user;
+    await ensureUserDoc(user.uid);
+    subscribeUserDoc(user.uid);
+    showSignedInUI(user);
+  } else {
+    if(unsubscribeDoc){ unsubscribeDoc(); unsubscribeDoc = null; }
+    CURRENT_USER = null;
+    USER_DATA = null;
+    showSignedOutUI();
   }
 });
 
 /* ================= PWA: INSTALL + SERVICE WORKER ================= */
 let deferredInstallPrompt = null;
-
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredInstallPrompt = e;
   document.getElementById("installRow").style.display = "flex";
 });
-
 document.getElementById("installBtn").addEventListener("click", async () => {
   if (!deferredInstallPrompt) return;
   deferredInstallPrompt.prompt();
@@ -625,11 +638,9 @@ document.getElementById("installBtn").addEventListener("click", async () => {
   deferredInstallPrompt = null;
   document.getElementById("installRow").style.display = "none";
 });
-
 window.addEventListener("appinstalled", () => {
   document.getElementById("installRow").style.display = "none";
 });
-
 (function showIosHintIfNeeded(){
   const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
   const isStandalone = window.navigator.standalone === true ||
@@ -638,19 +649,11 @@ window.addEventListener("appinstalled", () => {
     document.getElementById("iosInstallNote").style.display = "flex";
   }
 })();
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(() => {
-      // offline support just won't be available — the page still works fine online
-    });
+    navigator.serviceWorker.register("sw.js").catch(() => {});
   });
 }
-
-/* ================= INIT ================= */
-loadProfiles();
-ensureDefaultProfile();
-renderAll();
 </script>
 
 </body>
