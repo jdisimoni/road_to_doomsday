@@ -72,8 +72,6 @@
   }
   .oauth-btn.google{background:var(--paper); color:var(--black);}
   .oauth-btn.google:hover{background:#ddd9cd;}
-  .oauth-btn.apple{background:#000; color:#fff; border:1px solid #444;}
-  .oauth-btn.apple:hover{background:#1a1a1a;}
   .auth-divider{
     display:flex; align-items:center; gap:10px; margin:16px 0;
     font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted); letter-spacing:0.1em;
@@ -222,7 +220,6 @@
       <div class="auth-card">
         <h4>Sign In To Track Your Progress</h4>
         <button class="oauth-btn google" id="signInGoogleBtn">Continue with Google</button>
-        <button class="oauth-btn apple" id="signInAppleBtn">Continue with Apple</button>
         <div class="auth-divider">OR EMAIL</div>
         <input type="email" id="emailInput" placeholder="Email address" autocomplete="email">
         <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password">
@@ -324,7 +321,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
   createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
@@ -345,7 +342,6 @@ const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const provider = new GoogleAuthProvider();
-const appleProvider = new OAuthProvider('apple.com');
 
 /* ================= STATIC DATA ================= */
 const DOOMSDAY = new Date("2026-12-18T00:00:00");
@@ -624,10 +620,6 @@ document.getElementById("resetBtn").addEventListener("click", async ()=>{
 /* ================= AUTH UI ================= */
 document.getElementById("signInGoogleBtn").addEventListener("click", async ()=>{
   try{ await signInWithPopup(auth, provider); }
-  catch(e){ showAuthStatus(friendlyAuthError(e), false); }
-});
-document.getElementById("signInAppleBtn").addEventListener("click", async ()=>{
-  try{ await signInWithPopup(auth, appleProvider); }
   catch(e){ showAuthStatus(friendlyAuthError(e), false); }
 });
 document.getElementById("emailSignInBtn").addEventListener("click", async ()=>{
